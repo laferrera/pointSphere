@@ -29,19 +29,30 @@ class randomSphere
   {  
     for (int ni=0; ni < maxPoints; ni++){
       //point (points[ni].x, points[ni].y, points[ni].z);
-      stroke(points[ni].opacity * 255  , 200);
-      //point (points[ni].x, points[ni].y, points[ni].z);
+      stroke(points[ni].mod * 100  , points[ni].mod * 200);
       if( frameCount % 2 == 0)
       {
         
-        float randomModRange = 0.04;
+        float randomModRange = 0.08;
         float randomMod = random(0,randomModRange/8);
         points[ni].mod += points[ni].modDirection * randomMod;
         
-        if(
-            (points[ni].mod > 1 + randomModRange) ||
+        //if(
+        //    (points[ni].mod > 1 + randomModRange) ||
+        //    (points[ni].mod < 1 - randomModRange)
+        //  ){
+        //  points[ni].modDirection = points[ni].modDirection * -1;
+        //}
+        
+       if(
+            (points[ni].mod > 1 + randomModRange)
+        ){
+          points[ni].mod = 1 + randomModRange;
+          points[ni].modDirection = points[ni].modDirection * -1;
+        } else if 
             (points[ni].mod < 1 - randomModRange)
-          ){
+        {
+          points[ni].mod = 1 - randomModRange;
           points[ni].modDirection = points[ni].modDirection * -1;
         }
         
