@@ -2,7 +2,7 @@ class spherePoint
 {
   PVector vector;
   float mod = 1;
-  boolean modDirectionUp = true;
+  int modDirection = 1;
   float opacity = 1;
   
   spherePoint (float x, float y, float z)
