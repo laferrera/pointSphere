@@ -1,7 +1,7 @@
 class randomSphere
 {
   int maxPoints = 0;
-  PVector[] points;
+  spherePoint[] points;
   
   //--------------------------------------------------------
   // create random sphere points
@@ -9,7 +9,7 @@ class randomSphere
   randomSphere (int pointCount, float sphereRadius)
   { 
     maxPoints = pointCount; 
-    points = new PVector[pointCount];
+    points = new spherePoint[pointCount];
     for (int ni=0; ni < maxPoints; ni++)
     points[ni] = randomSpherePoint (sphereRadius);
   }
@@ -20,7 +20,8 @@ class randomSphere
   void draw()
   {  
     for (int ni=0; ni < maxPoints; ni++){
-      point (points[ni].x, points[ni].y, points[ni].z);
+      //point (points[ni].vector.x, points[ni].vector.y, points[ni].vector.z);
+      point (points[ni].x(), points[ni].y(), points[ni].z());
     }
   }
   
@@ -33,14 +34,15 @@ class randomSphere
       float randomRange = .01;
       float randomMod = random(-randomRange,randomRange);
       randomMod += 1.0;
-      point (points[ni].x*randomMod, points[ni].y*randomMod, points[ni].z*randomMod);
+      points[ni].mod = randomMod;
+      point (points[ni].x(), points[ni].y(), points[ni].z());
     }
   }
 
   //--------------------------------------------------------
   // return random sphere point using method of Cook/Neumann
   //--------------------------------------------------------
-  PVector randomSpherePoint (float sphereRadius)
+  spherePoint randomSpherePoint (float sphereRadius)
   {
     float a=0, b=0, c=0, d=0, k=99;
     while (k >= 1.0) 
@@ -55,18 +57,14 @@ class randomSphere
     // if we want to start with points randomly offset from the surface
     //float randomRadiusModifier = 15.5;
     //k = k / (sphereRadius + random(-randomRadiusModifier,randomRadiusModifier));
-    return new PVector 
-      ( 2*(b*d + a*c) / k 
+    //return new PVector 
+    //  ( 2*(b*d + a*c) / k 
+    //  , 2*(c*d - a*b) / k  
+    //  , (a*a + d*d - b*b - c*c) / k);
+    return new spherePoint
+          ( 2*(b*d + a*c) / k 
       , 2*(c*d - a*b) / k  
       , (a*a + d*d - b*b - c*c) / k);
+      
   }
-}
-
-class spherePoint
-{
-  PVector thisVector;
-  float mod = 1;
-  boolean modDirectionUp = true;
-  float opacity = 1;
-  
 }

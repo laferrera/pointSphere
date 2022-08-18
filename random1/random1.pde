@@ -6,7 +6,9 @@ http://extremelearning.com.au/how-to-generate-uniformly-random-points-on-n-spher
 
 int randomPoints = 2000;
 int radius = 150;
-float rotX, rotY = 0.0;
+float rotX, rotY, prevRotY = 0.0;
+float rotYInertia = 0.002;
+float rotYFriction = 0.95;
 randomSphere rs;
 //PShader shader1;
 
@@ -26,21 +28,27 @@ void draw()
   translate(width*0.5, height*0.5);
   rotateX (rotX);
   rotateY (rotY);
-  lightSpecular(255, 255, 255);
-  directionalLight(204, 204, 204, 0, 0, -1);  
-  rs.draw();
+  rs.experimentalDraw();
 
 
   if (mousePressed)
-  {
+  {  
+     prevRotY = rotY;
      rotY += (pmouseX - mouseX) * -0.002;
      rotX += (pmouseY - mouseY) * +0.002;
   }
-  rotY += 0.002;  
+
+  rotYInertia = rotYInertia * rotYFriction;
+  rotY += rotYInertia;  
 }
 //--------------------------------------------------------
 void keyPressed()
 {
   if (key == 's') save("RandomSpherePoints.png");
   if (key == ' ') rs = new randomSphere (randomPoints, round(width / 2.5));
+}
+
+
+void mouseReleased() {
+ rotYInertia =  rotY - prevRotY;
 }
