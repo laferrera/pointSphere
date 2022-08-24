@@ -29,51 +29,30 @@ class randomSphere
   {  
     for (int ni=0; ni < maxPoints; ni++){
       //point (points[ni].x, points[ni].y, points[ni].z);
-      stroke(points[ni].mod * 100  , points[ni].mod * 200);
-      if( frameCount % 2 == 0)
+       
+      float randomMod = random(0,randomModRange/24);
+      points[ni].mod += points[ni].modDirection * randomMod;
+      if(points[ni].mod > 1 + randomModRange)
       {
-        
-        float randomModRange = 0.08;
-        float randomMod = random(0,randomModRange/8);
-        points[ni].mod += points[ni].modDirection * randomMod;
-        
-        //if(
-        //    (points[ni].mod > 1 + randomModRange) ||
-        //    (points[ni].mod < 1 - randomModRange)
-        //  ){
-        //  points[ni].modDirection = points[ni].modDirection * -1;
-        //}
-        
-       if(
-            (points[ni].mod > 1 + randomModRange)
-        ){
-          points[ni].mod = 1 + randomModRange;
-          points[ni].modDirection = points[ni].modDirection * -1;
-        } else if 
-            (points[ni].mod < 1 - randomModRange)
-        {
-          points[ni].mod = 1 - randomModRange;
-          points[ni].modDirection = points[ni].modDirection * -1;
-        }
-        
-        
-        
-        //float randomRange = .02;
-        //float randomMod = 1.0 + random(-randomRange,randomRange);
-        //// if point.mod is greater than randomMod, flip direction
-        //if ( points[ni].mod > randomMod) 
-        //{
-        //  points[ni].modDirectionUp = !points[ni].modDirectionUp;
-        //  points[ni].mod *= randomMod;
-        //} 
-        //else if (points[ni].mod < randomMod){
-        //  points[ni].modDirectionUp = !points[ni].modDirectionUp;
-        //  points[ni].mod *= randomMod;
-        //}
-        //points[ni].mod = randomMod;
+        points[ni].mod = 1 + randomModRange;
+        points[ni].modDirection = points[ni].modDirection * -1;
+      } else if (points[ni].mod < 1 - randomModRange)
+      {
+        points[ni].mod = 1 - randomModRange;
+        points[ni].modDirection = points[ni].modDirection * -1;
       }
 
-      point (points[ni].x(), points[ni].y(), points[ni].z());
+      pushMatrix();
+        translate(points[ni].x(), points[ni].y(), points[ni].z());
+        //int opactity = 
+        fill(0, 51, 102); 
+        noStroke();
+        emissive(100, 100, 100);
+        specular(204, 102, 255);
+        shininess(50.0); 
+        box(1);
+      popMatrix();
+      //point (points[ni].x(), points[ni].y(), points[ni].z());
     }
   }
 

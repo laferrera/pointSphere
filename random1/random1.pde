@@ -1,9 +1,12 @@
 /** 
 using the rejection method 12 from here:
 http://extremelearning.com.au/how-to-generate-uniformly-random-points-on-n-spheres-and-n-balls/
+shader stuff?
+https://github.com/SableRaf/glsltutoP5/blob/master/thndl_tutorial/data/shader.frag
 */
 //--------------------------------------------------------
 
+//int randomPoints = 2000;
 int randomPoints = 2000;
 int radius = 150;
 float rotX, rotY, prevRotY, prevRotX = 0.0;
@@ -14,15 +17,15 @@ float rotXInertia = 0.001;
 float rotYFriction = 1;
 float rotXFriction = 1;
 randomSphere rs;
-//PShader shader1;
+float randomModRange = 0.1;
+PShader shader1;
 
 //--------------------------------------------------------
 void setup()
 {
   size(512, 512, P3D);
+  shader1 = loadShader("frag.glsl", "vert.glsl");
   smooth();
-  stroke(220, 200);
-  strokeWeight(2.0);
   rs = new randomSphere (randomPoints, radius); 
 }
 //--------------------------------------------------------
@@ -32,8 +35,17 @@ void draw()
   translate(width*0.5, height*0.5);
   rotateX (rotX);
   rotateY (rotY);
+  ambientLight(102, 255, 102);
+  lightSpecular(204, 0, 204);
+  directionalLight(255, 100, 0, 0, 0, -1);
+  directionalLight(0, 100, 0, 0, -1, 0);
+  directionalLight(0, 100, 255, -1, 0, 0);
+
+  
   rs.experimentalDraw();
 
+
+  //shader(shader1);
 
   if (mousePressed)
   {  
@@ -54,7 +66,7 @@ void draw()
 void keyPressed()
 {
   if (key == 's') save("RandomSpherePoints.png");
-  if (key == ' ') rs = new randomSphere (randomPoints, round(width / 2.5));
+  if (key == ' ') rs = new randomSphere (randomPoints, radius);
 }
 
 

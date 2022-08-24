@@ -8,6 +8,7 @@ class spherePoint
   spherePoint (float x, float y, float z)
   { 
     vector = new PVector (x,y,z);
+    modDirection = random(1) > 0.5 ? 1 : -1;
   }
   
   public float x(){
