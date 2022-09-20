@@ -47,9 +47,9 @@ class randomSphere
         //int opactity = 
         fill(0, 51, 102); 
         noStroke();
-        emissive(100, 100, 100);
-        specular(204, 102, 255);
-        shininess(50.0); 
+        emissive(100, 100, 180);
+        specular(204, 122, 255);
+        shininess(100.0); 
         box(1);
       popMatrix();
       //point (points[ni].x(), points[ni].y(), points[ni].z());
