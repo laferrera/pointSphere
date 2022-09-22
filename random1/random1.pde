@@ -6,36 +6,45 @@ https://github.com/SableRaf/glsltutoP5/blob/master/thndl_tutorial/data/shader.fr
 */
 //--------------------------------------------------------
 
-//int randomPoints = 2000;
-int randomPoints = 2000;
-int radius = 150;
-float rotX, rotY, prevRotY, prevRotX = 0.0;
-float rotYInertia = 0.002;
-float rotXInertia = 0.001;
-//float rotYFriction = 0.95;
-//float rotXFriction = 0.95;
-float rotYFriction = 1;
-float rotXFriction = 1;
-randomSphere rs;
-float randomModRange = 0.5;
-PShader shader1;
+import controlP5.*;
+ControlFrame cf;
 import peasy.*;
 PeasyCam cam;
+
+int randomPoints = 2000;
+int radius = 150;
+RandomSphere rs;
+
+float randomModRange = 0.1;
+float radiusMaxRatio = 1.5;
+float radiusMinRatio = 0.5;
+
+
+
+float particleSpeed = 0.05;
+long nextEvent = 0;
+float xRot = 0.01;
+float yRot = 0.00;
+float zRot = -0.01;
+float pointSize = 1.0;
+
+PShader shader1;
 
 void setup()
 {
   size(512, 512, P3D);
   shader1 = loadShader("frag.glsl", "vert.glsl");
   smooth();
-  
-  //ortho(-width/2,width/2,-height/2,height/2,-200,200);
+  cf = new ControlFrame(this, 200, 200, "Controls");
 
   cam = new PeasyCam(this, 500);
   cam.setMinimumDistance(350);
   cam.setMaximumDistance(800);
+  cam.setWheelScale(0.2);
   //cam.setDamping(.5,.5,.5);
   
-  rs = new randomSphere (randomPoints, radius);
+  rs = new RandomSphere (randomPoints, radius);
+
 }
 //--------------------------------------------------------
 void draw()
@@ -56,30 +65,81 @@ void draw()
 
   //shader(shader1);
 
-  //if (mousePressed)
-  //{  
-  //   prevRotY = rotY;
-  //   prevRotX = rotX;
-  //   rotY += (pmouseX - mouseX) * -0.002;
-  //   rotX += (pmouseY - mouseY) * +0.002;
-  //   rotYInertia = 0;
-  //   rotXInertia = 0;
-  //}
-
-  //rotYInertia = rotYInertia * rotYFriction;
-  //rotXInertia = rotXInertia * rotXFriction;
-  //rotY += rotYInertia;
-  //rotX += rotXInertia;  
+  if (millis() >= nextEvent) {
+    
+    movePoints();
+    float _zRot = sin(millis()/1000) * zRot;
+    
+    
+    if (!mousePressed) {
+      cam.rotateX(xRot);
+      cam.rotateY(yRot);
+      cam.rotateZ(_zRot);
+    }
+    nextEvent = millis() + 10;
+  }
 }
 //--------------------------------------------------------
-void keyPressed()
-{
-  if (key == 's') save("RandomSpherePoints.png");
-  if (key == ' ') rs = new randomSphere (randomPoints, radius);
-}
+
 
 
 void mouseReleased() {
- rotYInertia =  rotY - prevRotY;
- rotXInertia =  rotX - prevRotX;
+ //rotYInertia =  rotY - prevRotY;
+ //rotXInertia =  rotX - prevRotX;
+}
+
+void movePoints(){
+  for (int ni=0; ni < rs.pointCount; ni++){   
+    float randomMod = random(0,randomModRange * particleSpeed);
+    
+    MotionState motionState = rs.points[ni].motionState;
+    switch(motionState) {
+      case STILL:
+        break;
+      case OUT:
+        if(rs.points[ni].mod < 1 + randomModRange){
+          rs.points[ni].mod += rs.points[ni].modDirection * randomMod;          
+        } 
+        break;
+      case IN:
+        if(rs.points[ni].mod > 1 - randomModRange){
+          rs.points[ni].mod += rs.points[ni].modDirection * randomMod;          
+        } 
+        break;
+      case BOUNCE:
+        rs.points[ni].mod += rs.points[ni].modDirection * randomMod;
+    
+        // we've reached the outer mod
+        if(rs.points[ni].mod > 1 + randomModRange)
+        {
+          rs.points[ni].mod = 1 + randomModRange;
+          rs.points[ni].modDirection = rs.points[ni].modDirection * -1;
+        } 
+        // we've reached the inner mod
+        else if (rs.points[ni].mod < 1 - randomModRange)
+        {
+          rs.points[ni].mod = 1 - randomModRange;
+          rs.points[ni].modDirection = rs.points[ni].modDirection * -1;
+        }
+        break;
+    }
+  }
+}
+
+void keyPressed(KeyEvent ke){
+  myKeyPressed(ke);
+}
+
+void setPointMotionToOut( int modulo){
+  for (int ni=0; ni < rs.pointCount; ni++){
+    if(ni%8 == modulo){
+        if(rs.points[ni].motionState == MotionState.OUT){
+          rs.points[ni].motionState = MotionState.IN;
+          rs.points[ni].modDirection = -1;
+        } else {
+          rs.points[ni].motionState = MotionState.OUT;
+          rs.points[ni].modDirection = 1;
+        }
+    }
+  }
 }
