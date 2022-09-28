@@ -30,31 +30,27 @@ class RandomSphere
   void experimentalDraw()
   {  
     for (int ni=0; ni < pointCount; ni++){
-      //point (points[ni].x, points[ni].y, points[ni].z);
-       
-      //float randomMod = random(0,randomModRange/24);
-      //points[ni].mod += points[ni].modDirection * randomMod;
-      //if(points[ni].mod > 1 + randomModRange)
-      //{
-      //  points[ni].mod = 1 + randomModRange;
-      //  points[ni].modDirection = points[ni].modDirection * -1;
-      //} else if (points[ni].mod < 1 - randomModRange)
-      //{
-      //  points[ni].mod = 1 - randomModRange;
-      //  points[ni].modDirection = points[ni].modDirection * -1;
-      //}
-
       pushMatrix();
         translate(points[ni].x(), points[ni].y(), points[ni].z());
-        //int opactity = 
-        fill(0, 51, 102); 
-        noStroke();
-        emissive(100, 100, 180);
-        specular(204, 122, 255);
+        noStroke();        
+        
+        fill(0, 0, 0); 
+
+        emissive(points[ni].emissive[0],points[ni].emissive[1],points[ni].emissive[2]);
+        specular(points[ni].specular[0], points[ni].specular[1], points[ni].specular[2]);
+        // if(random(1) > 0.5){
+        //   emissive(points[ni].emissive[0],points[ni].emissive[1],points[ni].emissive[2]);
+        //   specular(points[ni].specular[0], points[ni].specular[1], points[ni].specular[2]);
+        // } else {
+        //   specular(points[ni].emissive[0],points[ni].emissive[1],points[ni].emissive[2]);
+        //   emissive(points[ni].specular[0], points[ni].specular[1], points[ni].specular[2]);
+        // }
+
+         
+        ambient(127,128,128);
         shininess(100.0); 
-        box(pointSize);
+        box(points[ni].pointSize);
       popMatrix();
-      //point (points[ni].x(), points[ni].y(), points[ni].z());
     }
   }
 

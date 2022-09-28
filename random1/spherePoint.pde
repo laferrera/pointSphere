@@ -7,8 +7,11 @@ class SpherePoint
   
   PVector vector;
   float mod = 1;
+  float pointSize = 1;
   float opacity = 1;
-  MotionState motionState = MotionState.IN;
+  float[] emissive = emissivePointColor;
+  float[] specular = specularPointColor;
+  MotionState motionState = MotionState.BOUNCE;
   int modDirection = 1;
   //int modDirection = motionState == MotionState.IN ? -1 : 1;
   
