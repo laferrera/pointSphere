@@ -4,6 +4,8 @@ void myKeyPressed(KeyEvent ke)
   if (key == 's') save("RandomSpherePoints.png");
   if (key == ' ') rs = new RandomSphere (randomPoints, radius);
   if (key == 'b') setPointMotionToBounce();
+  if (key == 'r') stopRotationCenterCamera();
+  if (key == 'e') exportSVG();
   if (key == 'p') randomizePointSize();
   if (key == '0') setPointMotionToOut(0);
   if (key == '1') setPointMotionToOut(1);

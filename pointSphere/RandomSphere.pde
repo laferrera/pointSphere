@@ -53,6 +53,18 @@ class RandomSphere
       popMatrix();
     }
   }
+  
+  void draw2d(){
+    int strokeColor = exporting ? 0 : 255;
+    noFill();
+    for (int ni=0; ni < pointCount; ni++){
+      pushMatrix();
+        translate(points[ni].x(), points[ni].y(), points[ni].z());
+        stroke(strokeColor);
+        circle(0,0,points[ni].pointSize);
+      popMatrix();
+    }
+  }
 
   //--------------------------------------------------------
   // return random sphere point using method of Cook/Neumann

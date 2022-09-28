@@ -43,66 +43,66 @@ class ControlFrame extends PApplet {
     //    ;
        
     cp5.addSlider("max radius")
+       .setValue(radiusMaxRatio)
        .plugTo(parent, "radiusMaxRatio")
        .setRange(1.0, 1.5)
-       .setValue(1.1)
        .setPosition(20, heightOffset())
        .setSize(cp5width, 10)
        ;
        
     cp5.addSlider("min radius")
+       .setValue(radiusMinRatio)    
        .plugTo(parent, "radiusMinRatio")
        .setRange(0.5, 1.0)
-       .setValue(0.9)
        .setPosition(20, heightOffset())
        .setSize(cp5width, 10)
        ;
        
     cp5.addSlider("particle speed")
+       .setValue(particleSpeed)
        .plugTo(parent, "particleSpeed")
        .setRange(0.01, 1.0)
-       .setValue(0.1)
        .setPosition(20, heightOffset())
        .setSize(cp5width, 10)
        ;       
        
     cp5.addSlider("x Rotation")
+       .setValue(xRot)    
        .plugTo(parent, "xRot")
        .setRange(-.05, 0.05)
-       .setValue(.01)
        .setPosition(20, heightOffset())
        .setSize(cp5width, 10)
        ;
 
     cp5.addSlider("y Rotation")
+       .setValue(yRot)    
        .plugTo(parent, "yRot")
        .setRange(-.05, 0.05)
-       .setValue(0)
        .setPosition(20, heightOffset())
        .setSize(cp5width, 10)
        ;
        
     cp5.addSlider("z Rotation")
+       .setValue(zRot)    
        .plugTo(parent, "zRot")
        .setRange(-.05, 0.05)
-       .setValue(-0.01)
        .setPosition(20, heightOffset())
        .setSize(cp5width, 10)
        ;
        
     cp5.addSlider("point size")
+       .setValue(pointSize)
        .plugTo(parent, "pointSize")
        .setRange(1.0, 3.00)
-       .setValue(1.0)
        .setPosition(20, heightOffset())
        .setSize(cp5width, 10)
        ;
        
     cp5.addToggle("randomPointSize")
+       .setValue(randomPointSize)    
        .plugTo(parent, "randomPointSize")
        .setPosition(20, heightOffset())
        .setSize(cp5width, 10)
-       .setValue(randomPointSize)
        .setMode(ControlP5.SWITCH)
      ;
        
@@ -112,7 +112,6 @@ class ControlFrame extends PApplet {
        .setSize(cp5width, 10)
        .setColorValue(color(emissivePointColor[0],emissivePointColor[1],emissivePointColor[2]))
        .setPosition(20, heightOffset())
-
        ;
        
     cp5.addColorPicker("specular color")

@@ -18,10 +18,8 @@ int radius = 150;
 RandomSphere rs;
 
 float randomModRange = 0.1;
-float radiusMaxRatio = 1.5;
-float radiusMinRatio = 0.5;
-
-
+float radiusMaxRatio = 1.2;
+float radiusMinRatio = 0.8;
 
 float particleSpeed = 0.1;
 long nextEvent = 0;
@@ -62,10 +60,8 @@ void setup()
 //--------------------------------------------------------
 void draw()
 {
-  if(!exporting){
-    background(0);
-  }
 
+  background(0);
   
   ambientLight(ambientLightColor[0],ambientLightColor[1],ambientLightColor[2]);
   lightSpecular(specularLightColor[0],specularLightColor[1],specularLightColor[2]);  
@@ -76,25 +72,7 @@ void draw()
   directionalLight(0, 100, 0, 0, 1, 0);  
   directionalLight(0, 64, 255, -1, 0, 0);
   directionalLight(0, 64, 128, 1, 0, 0);  
-
-  if (beginExportSVG){
-    println("begining export");
-    exporting = true;
-    // P3D needs begin Raw
-    beginRaw(SVG, "data/exports/export_"+timestamp()+".svg");
-    //beginRecord(SVG, "data/exports/export_"+timestamp()+".svg");
-  }
-  
   rs.experimentalDraw();
-
-  if (beginExportSVG && exporting){
-    println("finished export");
-    // P3D needs end Raw
-    endRaw();
-    //endRecord();
-    beginExportSVG = false;
-    exporting = false;
-  }
 
 
   //shader(shader1);
@@ -102,13 +80,13 @@ void draw()
   if (millis() >= nextEvent) {
     
     movePoints();
-    float _zRot = sin(millis()/1000) * zRot;
+    //float _zRot = sin(millis()/1000) * zRot;
     
     
     if (!mousePressed) {
       cam.rotateX(xRot);
       cam.rotateY(yRot);
-      cam.rotateZ(_zRot);
+      cam.rotateZ(zRot);
     }
     nextEvent = millis() + 10;
   }
@@ -215,8 +193,26 @@ void setColor(){
   }
 }
 
+public void stopRotationCenterCamera(){
+  xRot = 0;
+  yRot = 0;
+  zRot = 0;
+  cam.setRotations(0,0,0);
+}
+
 public void exportSVG(){
-  beginExportSVG = true;
+  exporting = true;
+ 
+  println("begining export");
+  clear();
+  // P3D needs begin Raw
+  //beginRecord(SVG, "data/exports/export_"+timestamp()+".svg");
+  beginRaw(SVG, "data/exports/export_"+timestamp()+".svg");
+  rs.draw2d();
+  //endRecord();
+  endRaw();
+  println("finished export");  
+  exporting = false;
 }
 
 String timestamp() {
