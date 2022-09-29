@@ -11,15 +11,15 @@ class SpherePoint
   float opacity = 1;
   float[] emissive = emissivePointColor;
   float[] specular = specularPointColor;
-  MotionState motionState = MotionState.STILL;
+  MotionState motionState = MotionState.BOUNCE;
   int modDirection = 1;
   //int modDirection = motionState == MotionState.IN ? -1 : 1;
   
   SpherePoint (float x, float y, float z)
   { 
     vector = new PVector (x,y,z);
-    modDirection = random(1) > 0.5 ? 1 : -1;
-    pointSize = globalPointSize;
+    //modDirection = random(1) > 0.5 ? 1 : -1;
+    modDirection = motionState == MotionState.IN ? -1 : 1;
   }
   
   public float x(){

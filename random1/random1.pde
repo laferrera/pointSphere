@@ -5,10 +5,6 @@ shader stuff?
 https://github.com/SableRaf/glsltutoP5/blob/master/thndl_tutorial/data/shader.frag
 */
 //--------------------------------------------------------
-import ch.bildspur.postfx.builder.*;
-import ch.bildspur.postfx.pass.*;
-import ch.bildspur.postfx.*;
-PostFX fx;
 import java.util.*;
 import processing.svg.*;
 import controlP5.*;
@@ -30,12 +26,13 @@ long nextEvent = 0;
 float xRot = 0.01;
 float yRot = 0.00;
 float zRot = -0.01;
-float globalPointSize = 1.8;
+float pointSize = 1.8;
 
 float[] ambientLightColor = {128, 128, 128};
 float[] specularLightColor = {100, 100, 255};
-float[] emissivePointColor = {255, 32, 64};
-float[] specularPointColor = {64, 32, 255};
+float[] emissivePointColor = {128, 64, 64};
+float[] specularPointColor = {64, 64, 200};
+
 
 boolean randomPointSize = true;
 
@@ -44,14 +41,11 @@ boolean exporting = false;
 
 PShader shader1;
 
-int zFrameCount = 0;
-int zFrameDivisor = 8;
-
 void setup()
 {
   size(640, 640, P3D);
-  fx = new PostFX(this);  
-  smooth(4);
+  shader1 = loadShader("frag.glsl", "vert.glsl");
+  smooth();
   cf = new ControlFrame(this, 300, 500, "Controls");
 
   cam = new PeasyCam(this, 500);
@@ -66,7 +60,7 @@ void setup()
 //--------------------------------------------------------
 void draw()
 {
-  if(frameCount % zFrameDivisor == 0) zFrameCount++;
+
   background(0);
   
   ambientLight(ambientLightColor[0],ambientLightColor[1],ambientLightColor[2]);
@@ -77,10 +71,12 @@ void draw()
   directionalLight(0, 200, 0, 0, -1, 0);
   directionalLight(0, 100, 0, 0, 1, 0);  
   directionalLight(0, 64, 255, -1, 0, 0);
-  directionalLight(0, 64, 128, 1, 0, 0); 
-  blendMode(BLEND);  
+  directionalLight(0, 64, 128, 1, 0, 0);  
   rs.experimentalDraw();
-  
+
+
+  //shader(shader1);
+
   if (millis() >= nextEvent) {
     
     movePoints();
@@ -94,14 +90,6 @@ void draw()
     }
     nextEvent = millis() + 10;
   }
-
-  blendMode(SCREEN);
-  fx.render()
-    .brightPass(0.2)
-    .blur(20, 50)
-    .compose();
-
-  
 }
 //--------------------------------------------------------
 
@@ -181,9 +169,9 @@ void setPointMotionToBounce(){
 void randomizePointSize(){
     for (int ni=0; ni < rs.pointCount; ni++){
       if(randomPointSize){
-        rs.points[ni].pointSize = 1 + (globalPointSize - 1) * noise(ni);
+        rs.points[ni].pointSize = random(1,pointSize);
       } else {
-        rs.points[ni].pointSize = globalPointSize;
+        rs.points[ni].pointSize = pointSize;
       }
     }
 }

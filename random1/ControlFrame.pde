@@ -41,15 +41,6 @@ class ControlFrame extends PApplet {
     //    .setPosition(20, heightOffset())
     //    .setSize(cp5width, 10)
     //    ;
-
-       
-    cp5.addSlider("num of points")
-       .setValue(randomPoints)
-       .plugTo(parent, "randomPoints")
-       .setRange(500, 8000)
-       .setPosition(20, heightOffset())
-       .setSize(cp5width, 10)
-       ;
        
     cp5.addSlider("max radius")
        .setValue(radiusMaxRatio)
@@ -100,8 +91,8 @@ class ControlFrame extends PApplet {
        ;
        
     cp5.addSlider("point size")
-       .setValue(globalPointSize)
-       .plugTo(parent, "globalPointSize")
+       .setValue(pointSize)
+       .plugTo(parent, "pointSize")
        .setRange(1.0, 3.00)
        .setPosition(20, heightOffset())
        .setSize(cp5width, 10)
@@ -114,14 +105,6 @@ class ControlFrame extends PApplet {
        .setSize(cp5width, 10)
        .setMode(ControlP5.SWITCH)
      ;
-     
-    cp5.addSlider("flicker frequency")
-       .setValue(zFrameDivisor)
-       .plugTo(parent, "zFrameDivisor")
-       .setRange(1, 30)
-       .setPosition(20, heightOffset())
-       .setSize(cp5width, 10)
-       ;
        
        
     cp5.addColorPicker("emissive color")
@@ -186,9 +169,6 @@ class ControlFrame extends PApplet {
               case("point size"):
                 randomizePointSize();
                 break;   
-              case("num of points"):
-                rs = new RandomSphere (randomPoints, radius);
-                break;
               //case("ambient color"):
               //  setColor();
               //  break;   
