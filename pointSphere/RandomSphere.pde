@@ -84,9 +84,10 @@ class RandomSphere
          
         ambient(127,128,128);
         shininess(100.0); 
-        box(points[ni].pointSize);
-        //sphereDetail(4);
-        //sphere(points[ni].pointSize);
+        //box(points[ni].pointSize);
+        //box(points[ni].pointSize * audioMod);
+        sphereDetail(4);
+        sphere(points[ni].pointSize * audioMod);
       popMatrix();
     }
   }

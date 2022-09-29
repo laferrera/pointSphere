@@ -47,6 +47,19 @@ PShader shader1;
 int zFrameCount = 0;
 int zFrameDivisor = 8;
 
+//import ddf.minim.*;
+//import ddf.minim.analysis.*;
+//Minim minim;
+//AudioInput in;
+import processing.sound.*;
+AudioIn input;
+Amplitude loudness;
+
+boolean audioModOn = true;
+float lastAudioMod = 1;
+float audioMod = 1;
+float lerpPercent = 1/float(zFrameDivisor);
+
 void setup()
 {
   size(640, 640, P3D);
@@ -59,6 +72,13 @@ void setup()
   cam.setMaximumDistance(800);
   cam.setWheelScale(0.2);
   //cam.setDamping(.5,.5,.5);
+
+  print(Sound.list());
+  new Sound(this).inputDevice(7);
+  input = new AudioIn(this, 0); 
+  input.start();
+  loudness = new Amplitude(this);
+  loudness.input(input);
   
   rs = new RandomSphere (randomPoints, radius);
 
@@ -66,8 +86,18 @@ void setup()
 //--------------------------------------------------------
 void draw()
 {
-  if(frameCount % zFrameDivisor == 0) zFrameCount++;
+  if(frameCount % zFrameDivisor == 0){
+    zFrameCount++;
+    lastAudioMod = audioMod; 
+    // get(1) is the first sample in the buffer
+    audioMod = 1 + loudness.analyze() * 25;
+    lerpPercent = (frameCount % zFrameDivisor) * 1/(float)zFrameDivisor;
+  }
   background(0);
+  
+  lerp(lastAudioMod, audioMod, lerpPercent);
+  
+  
   
   ambientLight(ambientLightColor[0],ambientLightColor[1],ambientLightColor[2]);
   lightSpecular(specularLightColor[0],specularLightColor[1],specularLightColor[2]);  

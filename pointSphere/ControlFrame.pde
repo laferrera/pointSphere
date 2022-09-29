@@ -115,6 +115,14 @@ class ControlFrame extends PApplet {
        .setMode(ControlP5.SWITCH)
      ;
      
+    cp5.addToggle("audio mod")
+       .setValue(audioModOn)    
+       .plugTo(parent, "audioModOn")
+       .setPosition(20, heightOffset())
+       .setSize(cp5width, 10)
+       .setMode(ControlP5.SWITCH)
+     ;
+     
     cp5.addSlider("flicker frequency")
        .setValue(zFrameDivisor)
        .plugTo(parent, "zFrameDivisor")
