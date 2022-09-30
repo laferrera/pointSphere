@@ -3,6 +3,8 @@ using the rejection method 12 from here:
 http://extremelearning.com.au/how-to-generate-uniformly-random-points-on-n-spheres-and-n-balls/
 shader stuff?
 https://github.com/SableRaf/glsltutoP5/blob/master/thndl_tutorial/data/shader.frag
+//this is also a good looking blog article on poisson disc sampling
+//https://www.jasondavies.com/maps/random-points/
 */
 //--------------------------------------------------------
 import ch.bildspur.postfx.builder.*;
@@ -34,10 +36,12 @@ float globalPointSize = 1.8;
 
 float[] ambientLightColor = {128, 128, 128};
 float[] specularLightColor = {100, 100, 255};
-float[] emissivePointColor = {255, 32, 64};
+float[] emissivePointColor = {255, 224, 255};
 float[] specularPointColor = {64, 32, 255};
 
-boolean randomPointSize = true;
+
+boolean pointSelectionMethod = true;
+boolean randomPointSize = false;
 
 boolean beginExportSVG = false;
 boolean exporting = false;
@@ -50,12 +54,12 @@ int zFrameDivisor = 8;
 //import ddf.minim.*;
 //import ddf.minim.analysis.*;
 //Minim minim;
-//AudioInput in;
+//AudioInput in;audioModOn
 import processing.sound.*;
 AudioIn input;
 Amplitude loudness;
 
-boolean audioModOn = true;
+boolean audioModOn = false;
 float lastAudioMod = 1;
 float audioMod = 1;
 float lerpPercent = 1/float(zFrameDivisor);
@@ -73,8 +77,8 @@ void setup()
   cam.setWheelScale(0.2);
   //cam.setDamping(.5,.5,.5);
 
-  print(Sound.list());
-  new Sound(this).inputDevice(7);
+  //print(Sound.list());
+  //new Sound(this).inputDevice(7);
   input = new AudioIn(this, 0); 
   input.start();
   loudness = new Amplitude(this);
@@ -90,7 +94,7 @@ void draw()
     zFrameCount++;
     lastAudioMod = audioMod; 
     // get(1) is the first sample in the buffer
-    audioMod = 1 + loudness.analyze() * 25;
+    if(audioModOn) audioMod = 1 + loudness.analyze() * 25;
     lerpPercent = (frameCount % zFrameDivisor) * 1/(float)zFrameDivisor;
   }
   background(0);

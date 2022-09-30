@@ -9,12 +9,19 @@ class RandomSphere
   //--------------------------------------------------------
   RandomSphere (int _pointCount, float _radius)
   { 
+    Calendar now = Calendar.getInstance();
+    noiseSeed(now.getTimeInMillis());
     pointCount = _pointCount; 
     radius = _radius;
     points = new SpherePoint[pointCount];
+    
+    //int sphereSurfArea = 2 * TWO_PI * sq(sphereRadius)
     for (int ni=0; ni < pointCount; ni++){
+      // we should use best candidate
+      //https://bl.ocks.org/mbostock/1893974
       //points[ni] = randomSpherePoint(radius);
       points[ni] = perlinSpherePoint(radius, ni);
+      //points[ni] = perlinSpherePoint2(radius, ni);
     }
   }
  
@@ -48,39 +55,6 @@ class RandomSphere
           points[ni].specular[1]  * lerp(noise(0,ni,zFrameCount), noise(0,ni,zFrameCount +1), lerpPercent),
           points[ni].specular[2]  * lerp(noise(ni,ni,zFrameCount), noise(ni,ni,zFrameCount +1), lerpPercent)
         );
-        
-        
-        //emissive(
-        //  points[ni].emissive[0] * noise(ni,0,zFrameCount),
-        //  points[ni].emissive[1] * noise(0,ni,zFrameCount),
-        //  points[ni].emissive[2] * noise(ni,ni,zFrameCount)
-        // );
-        //specular(
-        //  points[ni].specular[0]  * noise(ni+100,100,zFrameCount),
-        //  points[ni].specular[1]  * noise(ni, ni + 100,zFrameCount),
-        //  points[ni].specular[2]  * noise(ni + 100, ni + 100, zFrameCount)
-        //);        
-        
-        //emissive(
-        //  points[ni].emissive[0],
-        //  points[ni].emissive[1],
-        //  points[ni].emissive[2]
-        // );
-        //specular(
-        //  points[ni].specular[0],
-        //  points[ni].specular[1],
-        //  points[ni].specular[2]
-        //);
-        
-        
-         //if(random(1) > 0.5){
-         //  emissive(points[ni].emissive[0],points[ni].emissive[1],points[ni].emissive[2]);
-         //  specular(points[ni].specular[0], points[ni].specular[1], points[ni].specular[2]);
-         //} else {
-         //  specular(points[ni].emissive[0],points[ni].emissive[1],points[ni].emissive[2]);
-         //  emissive(points[ni].specular[0], points[ni].specular[1], points[ni].specular[2]);
-         //}
-
          
         ambient(127,128,128);
         shininess(100.0); 
@@ -119,13 +93,6 @@ class RandomSphere
       k = a*a +b*b +c*c +d*d;
     }
     k = k / sphereRadius;
-    // if we want to start with points randomly offset from the surface
-    //float randomRadiusModifier = 15.5;
-    //k = k / (sphereRadius + random(-randomRadiusModifier,randomRadiusModifier));
-    //return new PVector 
-    //  ( 2*(b*d + a*c) / k 
-    //  , 2*(c*d - a*b) / k  
-    //  , (a*a + d*d - b*b - c*c) / k);
     return new SpherePoint
           ( 2*(b*d + a*c) / k 
           , 2*(c*d - a*b) / k  
@@ -137,28 +104,18 @@ class RandomSphere
   SpherePoint perlinSpherePoint (float sphereRadius, int ni){
     //look at this siggraph paper...
     //https://cs.nyu.edu/~perlin/noise/
-    Calendar now = Calendar.getInstance();
-    noiseSeed(now.getTimeInMillis());
+
     float a=0, b=0, c=0;
     while(!(a+b+c != 0)){
-      //a = random(-1,1);
-      //b = random(-1,1);
-      //c = random(-1,1);
-      
-      //a = noise(ni,0,0) * 2 - 1;
-      //b = noise(0,ni,0) * 2 - 1;
-      //c = noise(0,0,ni) * 2 - 1;      
-      
+
+      //a = noise(ni,0) * 2 - 1;
+      //b = noise(0,ni) * 2 - 1;
+      //c = noise(ni,ni) * 2 - 1;
       a = noise(ni,0) * 2 - 1;
-      b = noise(0,ni) * 2 - 1;
-      c = noise(ni,ni) * 2 - 1;
+      b = noise(ni,1) * 2 - 1;
+      c = noise(ni,2) * 2 - 1;
       
-      //int randNeg = random(1) > 0.5 ? 1 : -1;
-      //a = noise(ni,0,0) * randNeg;
-      //randNeg = random(1) > 0.5 ? 1 : -1;
-      //b = noise(0,ni,0) * randNeg;
-      //randNeg = random(1) > 0.5 ? 1 : -1;
-      //c = noise(0,0,ni) * randNeg;
+      
     }
     float normalize = 1/sqrt( sq(a) + sq(b) + sq(c) );
 
@@ -166,6 +123,41 @@ class RandomSphere
     b = b * normalize * sphereRadius; 
     c = c * normalize * sphereRadius;
     return new SpherePoint(a,b,c);
+  }
+  
+    //let's try perlin points harder.... 
+  SpherePoint perlinSpherePoint2 (float sphereRadius, int ni){
+    //look at this siggraph paper...
+    //https://cs.nyu.edu/~perlin/noise/
+    Calendar now = Calendar.getInstance();
+    noiseSeed(now.getTimeInMillis());
+    
+    int colCount =  int(sqrt(pointCount));
+    //int colCount = pointCount;
+    int curRow = floor(ni/colCount);
+    int curCol = ni % colCount;
+    float curNoise = 0;
+    while(curNoise < 0.5){
+      curNoise = noise(curCol, curRow);
+      ni++;
+      curRow = floor(ni/colCount);
+      curCol = ni % colCount;
+    }
+    println("cur ni", ni);
+    println("colCount", colCount);
+    println("curRow", curRow);
+    println("curCol", curCol);
+     
+    
+    //float phi = float(ni) / sqrt(float(pointCount))  * PI;
+    //float theta = float(ni) / sqrt(float(pointCount)) * TWO_PI;
+    
+    float phi = (PI / float(colCount)) * curRow;
+    float theta = (TWO_PI / float(colCount)) * curCol;
+    float x = radius * sin(phi) * cos(theta);
+    float y = radius * sin(phi) * sin(theta);
+    float z = radius * cos(phi);
+    return new SpherePoint(x,y,z);
   }
   
 }
