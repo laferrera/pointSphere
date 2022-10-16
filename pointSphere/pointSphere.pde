@@ -139,7 +139,7 @@ void draw()
   
   tv.set("time", (float) millis()/1000.0);
   filter(tv);
-  
+ //filter(radialStreak); 
 }
 //--------------------------------------------------------
 
