@@ -7,10 +7,7 @@ https://github.com/SableRaf/glsltutoP5/blob/master/thndl_tutorial/data/shader.fr
 //https://www.jasondavies.com/maps/random-points/
 */
 //--------------------------------------------------------
-import ch.bildspur.postfx.builder.*;
-import ch.bildspur.postfx.pass.*;
-import ch.bildspur.postfx.*;
-PostFX fx;
+
 import java.util.*;
 import processing.svg.*;
 import controlP5.*;
@@ -46,8 +43,6 @@ boolean randomPointSize = false;
 boolean beginExportSVG = false;
 boolean exporting = false;
 
-PShader shader1;
-
 int zFrameCount = 0;
 int zFrameDivisor = 8;
 
@@ -64,10 +59,14 @@ float lastAudioMod = 1;
 float audioMod = 1;
 float lerpPercent = 1/float(zFrameDivisor);
 
+PShader starglowstreak;
+PShader radialStreak;
+PShader tv;
+
 void setup()
 {
   size(640, 640, P3D);
-  fx = new PostFX(this);  
+
   smooth(4);
   cf = new ControlFrame(this, 300, 500, "Controls");
 
@@ -85,7 +84,9 @@ void setup()
   loudness.input(input);
   
   rs = new RandomSphere (randomPoints, radius);
-
+  starglowstreak = loadShader("myStarglowstreaks.glsl");
+  radialStreak = loadShader("myRadialStreak.glsl");
+  tv = loadShader("tv1.glsl");
 }
 //--------------------------------------------------------
 void draw()
@@ -129,12 +130,15 @@ void draw()
     nextEvent = millis() + 10;
   }
 
-  blendMode(SCREEN);
-  fx.render()
-    .brightPass(0.2)
-    .blur(20, 50)
-    .compose();
 
+  starglowstreak.set("time", (float) millis()/1000.0);
+  filter(starglowstreak);
+  
+  radialStreak.set("time", (float) millis()/1000.0);
+  filter(radialStreak);
+  
+  tv.set("time", (float) millis()/1000.0);
+  filter(tv);
   
 }
 //--------------------------------------------------------
